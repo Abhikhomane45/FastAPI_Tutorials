@@ -55,3 +55,19 @@ def addstud(data:stud):
     students.append(Student_data)
     return {"status":"Student added Successfully !!", "data":Student_data}
 
+#Put Method
+
+@app.put("/update_student/{student_id}")
+def updatestd(data:stud , student_id:int):
+    
+    for student in students:
+        if student["id"]==student_id:
+            student.update(data.model_dump(exclude={"id"}))
+            return {
+                "status": "Student updated successfully!",
+                "data": student
+            }
+    
+    return {"error": "Student not found"}
+
+
