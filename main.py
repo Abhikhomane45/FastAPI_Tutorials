@@ -30,7 +30,7 @@ def get_student(student_id: int):
         if student["id"] == student_id:
             return student
 
-    return {"error": "Student not found"}
+    return {"error": "Student not found or may be deleted"}
 
 
 #query parameters
@@ -69,5 +69,21 @@ def updatestd(data:stud , student_id:int):
             }
     
     return {"error": "Student not found"}
+
+#delete Method 
+
+@app.delete("/delete_student/{student_id}")
+def delete_student(student_id: int):
+    for student in students:
+        if student["id"] == student_id:
+            students.remove(student)
+
+            return {
+                "status": "Student deleted successfully!",
+                "data": student
+            }
+
+    return {"error": "Student not found or it may be deleted using Delete Method "}
+
 
 
