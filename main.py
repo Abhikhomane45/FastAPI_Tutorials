@@ -1,7 +1,8 @@
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request ,HTTPException
 from mockData import students
 from dtos import stud
+from pydantic import BaseModel
 
 # Create a FastAPI application instance
 app = FastAPI()
@@ -137,4 +138,44 @@ def delete_student(student_id: int):
     # Return an error if the ID does not exist in the list
     return {
         "error": "Student not found or it may have already been deleted"
+    }
+    
+    
+#------------------Response Model---------------------------
+
+# Class 1: Contains all fields to validate
+class UserInput(BaseModel):
+    name: str
+    age: int
+    password: str
+
+# Class 2: Defines the response fields
+class UserResponse(BaseModel):
+    name: str
+    age: int
+
+
+@app.post("/user", response_model=UserResponse)
+def create_user(user: UserInput):
+    return {
+        "name": user.name,
+        "age": user.age,
+        "password": user.password
+    }
+    
+    
+
+#------HTTPS Execption-----
+@app.get("/get_user_by/{user_id}")  # Don't forget @
+def getuserby(user_id: int):
+    if user_id != 1:
+        raise HTTPException(
+            status_code=404,
+            detail="Invalid User Id"
+        )
+
+    return {
+        "id": 1,
+        "name": "Abhi",
+        "age": 23
     }
