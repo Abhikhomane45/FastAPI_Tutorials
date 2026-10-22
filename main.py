@@ -1,5 +1,5 @@
 
-from fastapi import FastAPI, Request ,HTTPException
+from fastapi import FastAPI, Request ,HTTPException,Header,Depends
 from mockData import students
 from dtos import stud
 from pydantic import BaseModel
@@ -165,7 +165,8 @@ def create_user(user: UserInput):
     
     
 
-#------HTTPS Execption-----
+#--------------HTTPS Execption---------------
+
 @app.get("/get_user_by/{user_id}")  # Don't forget @
 def getuserby(user_id: int):
     if user_id != 1:
@@ -179,3 +180,25 @@ def getuserby(user_id: int):
         "name": "Abhi",
         "age": 23
     }
+    
+    
+#-------------------Dependancy Injection----------
+
+def verifytoken(token: str=Header(None)):
+    
+    if token != "Mysecretkey":
+        raise HTTPException(
+            status_code=401,
+            detail="User Unauthozied"
+            
+        )
+        
+    return {
+        "User":"Welcome Abhijeet ! You have now logged in"
+    }
+    
+@app.get("/Profile")
+def Profile(data=Depends(verifytoken)):
+    return data
+    
+    
