@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS students (
 cursor.execute(
     "INSERT INTO students (name, age) VALUES (?, ?)",
     ("Abhi", 23)
+    
 )
 
 # Save changes
