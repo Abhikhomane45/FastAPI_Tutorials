@@ -32,6 +32,11 @@ def get_db():
 def datasql(db:Session=Depends(get_db)):
     return{"msg":"API for sql data base is working"}
 
+
+#-----CRUD OPERATIONS--------
+
+#Insert/Create
+
 @app.post("/todos")
 def create_todo(title:str,db: Session = Depends(get_db)):
     todo = Todo(title=title,completed=False)
@@ -48,6 +53,22 @@ def create_todo(title:str,db: Session = Depends(get_db)):
         }
     }
     
+#Read all
+
+@app.get("/get_all_todos")
+def get_all_todos(db:Session=Depends(get_db)):
+    todos=db.query(Todo).all()
+    return todos
+
+#read by id 
+@app.get("/get_todo_by/{todo_id}")
+def get_todo_by_id(todo_id=int,db:Session=Depends(get_db)):
+    todo=db.query(Todo).filter(Todo.id==todo_id).first()
+    
+    if todo is None:
+        return {"message": "Todo not found"} 
+    
+    return {f"todo of {todo_id}":todo}
     
 
 
