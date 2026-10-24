@@ -92,6 +92,27 @@ def update(todo_id:int, title:str, db:Session=Depends(get_db) ):
         "todo" :updatedtodo.title
     }
     
+    
+#delete
+@app.delete("/delete_todo_by/{todo_id}")
+def delete_todo(todo_id: int, db: Session = Depends(get_db)):
+
+    todo = db.query(Todo).filter(Todo.id == todo_id).first()
+
+    if todo is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Todo not found"
+        )
+
+    db.delete(todo)
+    db.commit()
+
+    return {
+        "msg": "Todo deleted successfully",
+        "deleted_id": todo_id
+    }
+    
 
 
     
