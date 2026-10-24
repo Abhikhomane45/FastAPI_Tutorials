@@ -1,4 +1,4 @@
-from fastapi import FastAPI,Depends
+from fastapi import FastAPI,Depends,HTTPException
 from sqlalchemy import create_engine,Column,Integer,String,Boolean
 from sqlalchemy.orm import sessionmaker, declarative_base,Session
 
@@ -69,6 +69,28 @@ def get_todo_by_id(todo_id=int,db:Session=Depends(get_db)):
         return {"message": "Todo not found"} 
     
     return {f"todo of {todo_id}":todo}
+
+
+#update
+@app.put("/update_todo_by/{todo_id}")
+def update(todo_id:int, title:str, db:Session=Depends(get_db) ):
+    updatedtodo=db.query(Todo).filter(Todo.id==todo_id).first()
+    
+    if updatedtodo is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Todo id  is invalid or may be deleted , Try another valid id"
+        )
+        
+    updatedtodo.title=title
+    
+    db.commit()
+    db.refresh(Todo)
+    
+    return {
+        "msg":"Todo is updated",
+        "todo" :updatedtodo.title
+    }
     
 
 
